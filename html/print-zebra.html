@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Zebra ZD410 - Print Server</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Courier New', monospace;
+    background: #1a1a1a; color: #e0e0e0;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 24px;
+  }
+  .container { width: 100%; max-width: 560px; }
+  h1 { font-size: 13px; letter-spacing: 3px; text-transform: uppercase; color: #888; margin-bottom: 24px; }
+  h1 span { color: #00d4aa; }
+  .card { background: #242424; border: 1px solid #333; border-radius: 4px; padding: 20px; margin-bottom: 16px; }
+  label { display: block; font-size: 11px; letter-spacing: 2px; color: #666; text-transform: uppercase; margin-bottom: 8px; }
+  input, textarea, select {
+    width: 100%; background: #1a1a1a; border: 1px solid #333; color: #e0e0e0;
+    font-family: 'Courier New', monospace; font-size: 14px; padding: 10px 12px;
+    border-radius: 3px; outline: none; transition: border-color 0.2s;
+  }
+  input:focus, textarea:focus, select:focus { border-color: #00d4aa; }
+  select option { background: #1a1a1a; }
+  textarea { resize: vertical; min-height: 80px; }
+  .row { display: flex; gap: 12px; margin-top: 16px; }
+  .row > div { flex: 1; }
+  .preview {
+    background: #fff; color: #000; border-radius: 3px;
+    margin-top: 8px; border: 2px dashed #444;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; height: 120px;
+  }
+  .btn {
+    width: 100%; padding: 14px; background: #00d4aa; color: #000; border: none;
+    font-family: 'Courier New', monospace; font-size: 13px; letter-spacing: 2px;
+    text-transform: uppercase; font-weight: bold; cursor: pointer; border-radius: 3px;
+    transition: background 0.2s; margin-top: 8px; display: flex; align-items: center; justify-content: center; gap: 8px;
+  }
+  .btn:hover { background: #00b892; }
+  .btn:active { background: #009e7d; }
+  .btn-group { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+  .btn-group .btn-secondary { flex: 1; min-width: 45%; margin-top: 0; }
+  .btn-secondary { background: #2d2d2d; color: #e0e0e0; border: 1px solid #444; font-size: 11px; padding: 10px; }
+  .btn-secondary:hover { background: #363636; border-color: #666; }
+  .status { font-size: 11px; color: #00d4aa; margin-top: 12px; min-height: 18px; letter-spacing: 1px; word-break: break-all; }
+  .status.error { color: #ff5555; }
+  .cmd-box {
+    background: #111; border: 1px solid #333; border-radius: 3px; padding: 12px;
+    font-size: 11px; color: #00d4aa; white-space: pre-wrap; word-break: break-all;
+    margin-top: 12px; line-height: 1.5; max-height: 140px; overflow-y: auto;
+  }
+  .cmd-label { font-size: 10px; color: #555; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 6px; }
+  .zpl-box {
+    background: #111; border: 1px solid #333; border-radius: 3px; padding: 12px;
+    font-size: 11px; color: #888; white-space: pre-wrap; word-break: break-all;
+    margin-top: 8px; max-height: 120px; overflow-y: auto;
+  }
+  .toggle { cursor: pointer; color: #555; font-size: 11px; letter-spacing: 1px; margin-top: 8px; display: inline-block; }
+  .toggle:hover { color: #888; }
+  .tabs { display: flex; }
+  .tab {
+    flex: 1; padding: 10px; background: #1a1a1a; border: 1px solid #333; color: #555;
+    font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px;
+    text-transform: uppercase; cursor: pointer; text-align: center; transition: all 0.2s;
+  }
+  .tab:first-child { border-radius: 3px 0 0 0; }
+  .tab:last-child { border-radius: 0 3px 0 0; border-left: none; }
+  .tab.active { background: #242424; color: #00d4aa; border-bottom-color: #242424; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+  .align-btns { display: flex; gap: 8px; margin-top: 12px; }
+  .align-btn {
+    flex: 1; padding: 8px; background: #1a1a1a; border: 1px solid #333; color: #555;
+    font-family: 'Courier New', monospace; font-size: 11px;
+    text-transform: uppercase; cursor: pointer; border-radius: 3px; transition: all 0.2s; text-align: center;
+  }
+  .align-btn.active { border-color: #00d4aa; color: #00d4aa; }
+  .align-btn:hover { border-color: #555; color: #aaa; }
+  .badge {
+    display: inline-block; background: #00d4aa22; color: #00d4aa; border: 1px solid #00d4aa44;
+    font-size: 10px; padding: 2px 8px; border-radius: 2px; margin-left: 8px;
+  }
+  .hint { font-size: 11px; color: #555; margin-top: 8px; }
+  .font-desc { font-size: 10px; color: #555; margin-top: 4px; letter-spacing: 1px; }
+  .server-config { background: #1e1e1e; border: 1px solid #2a2a2a; border-radius: 4px; padding: 12px; margin-bottom: 16px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Zebra <span>ZD410</span> · Print Server</h1>
+
+  <div class="server-config">
+    <label>Servidor de Impressão Windows (IP / URL)</label>
+    <input type="text" id="serverUrl" value="http://192.168.0.199:5000" placeholder="http://192.168.0.199:5000">
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('text')">Text</div>
+    <div class="tab" onclick="switchTab('multi')">Multi</div>
+    <div class="tab" onclick="switchTab('seq')">Sequential</div>
+  </div>
+
+  <div class="card" style="border-radius: 0 4px 4px 4px;">
+
+    <div id="tab-text" class="tab-content active">
+      <label>Label Text</label>
+      <textarea id="labelText" placeholder="Type what to print..."></textarea>
+    </div>
+
+    <div id="tab-multi" class="tab-content">
+      <label>Labels <span class="badge">each line = 1 label</span></label>
+      <textarea id="multiText" style="min-height:120px">Sensor de fluxo
+Sensor de pressão
+Sensor de temperatura</textarea>
+      <div class="hint">Each line prints as a separate label.</div>
+    </div>
+
+    <div id="tab-seq" class="tab-content">
+      <label>Prefix (optional)</label>
+      <input type="text" id="seqPrefix" placeholder="e.g. CABO-" value="">
+      <div class="row">
+        <div>
+          <label>Start</label>
+          <input type="number" id="seqStart" value="50110">
+        </div>
+        <div>
+          <label>End</label>
+          <input type="number" id="seqEnd" value="50115">
+        </div>
+        <div>
+          <label>Copies each</label>
+          <input type="number" id="seqCopies" value="1" min="1">
+        </div>
+      </div>
+      <div class="hint" id="seqCount">6 labels</div>
+    </div>
+
+    <div class="align-btns">
+      <div class="align-btn active" onclick="setAlign('C',this)">⬛ Center</div>
+      <div class="align-btn" onclick="setAlign('L',this)">◀ Left</div>
+      <div class="align-btn" onclick="setAlign('R',this)">▶ Right</div>
+    </div>
+    <div class="align-btns">
+      <div class="align-btn active" onclick="setVAlign('center',this)">↕ V-Center</div>
+      <div class="align-btn" onclick="setVAlign('top',this)">↑ Top</div>
+      <div class="align-btn" onclick="setVAlign('bottom',this)">↓ Bottom</div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Width (mm)</label>
+        <input type="number" id="width" value="57.2" min="10" max="102">
+      </div>
+      <div>
+        <label>Height (mm)</label>
+        <input type="number" id="height" value="31.8" min="5" max="150">
+      </div>
+      <div>
+        <label>Font Size</label>
+        <input type="number" id="fontSize" value="40" min="10" max="200">
+      </div>
+    </div>
+
+    <div style="margin-top:16px">
+      <label>Font</label>
+      <select id="fontType" oninput="update()">
+        <option value="0">A0 — Default proportional</option>
+        <option value="A">A  — Small proportional</option>
+        <option value="B">B  — Small monospaced</option>
+        <option value="C">C  — Bold proportional</option>
+        <option value="D">D  — Monospaced</option>
+        <option value="E">E  — OCR-B</option>
+        <option value="F">F  — Large monospaced</option>
+        <option value="G">G  — Bold monospaced</option>
+        <option value="H">H  — OCR-A</option>
+      </select>
+      <div class="font-desc" id="fontDesc">Default proportional — general purpose</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Preview <span class="badge" id="previewBadge">1 label</span></label>
+    <div class="preview" id="preview"></div>
+    <span class="toggle" onclick="toggleZpl()">▸ Show ZPL</span>
+    <div class="zpl-box" id="zplBox" style="display:none"></div>
+  </div>
+
+  <button class="btn" onclick="imprimirRede()">🖨️ IMPRIMIR NA ZEBRA (HTTP)</button>
+  
+  <div class="btn-group">
+    <button class="btn btn-secondary" onclick="downloadZplFile()">💾 BAIXAR ARQUIVO .ZPL</button>
+    <button class="btn btn-secondary" onclick="copyCurlCmd()">📋 COPIAR CURL (REDE)</button>
+    <button class="btn btn-secondary" onclick="copyLpCmd()">📋 COPIAR LP (LINUX LOCAL)</button>
+    <button class="btn btn-secondary" onclick="copyZpl()">📄 COPIAR APENAS ZPL</button>
+  </div>
+
+  <div class="cmd-box">
+    <div class="cmd-label">Comando cURL (Rede)</div>
+    <div id="cmdCurlText"></div>
+    <div class="cmd-label" style="margin-top:10px;">Comando lp (Linux Local)</div>
+    <div id="cmdLpText"></div>
+  </div>
+
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+  let mode = 'text';
+  let hAlign = 'C';
+  let vAlign = 'center';
+
+  const fontMeta = {
+    '0': { desc: 'Default proportional — general purpose',       css: 'Arial, sans-serif',      mono: false },
+    'A': { desc: 'Small proportional — compact labels',          css: 'Arial Narrow, sans-serif',mono: false },
+    'B': { desc: 'Small monospaced — compact fixed-width',       css: 'Courier New, monospace',  mono: true  },
+    'C': { desc: 'Bold proportional — emphasis',                 css: 'Arial Black, sans-serif', mono: false },
+    'D': { desc: 'Monospaced — fixed-width, clean',              css: 'Courier New, monospace',  mono: true  },
+    'E': { desc: 'OCR-B — machine readable',                     css: 'Courier New, monospace',  mono: true  },
+    'F': { desc: 'Large monospaced — big fixed-width',           css: 'Courier New, monospace',  mono: true  },
+    'G': { desc: 'Bold monospaced — fixed-width bold',           css: '"Courier New", monospace',mono: true  },
+    'H': { desc: 'OCR-A — optical character recognition',        css: 'Courier New, monospace',  mono: true  },
+  };
+
+  // Restaurar IP salvo previamente no localStorage
+  const savedUrl = localStorage.getItem('zebra_server_url');
+  if (savedUrl) {
+    document.getElementById('serverUrl').value = savedUrl;
+  }
+  document.getElementById('serverUrl').addEventListener('input', (e) => {
+    localStorage.setItem('zebra_server_url', e.target.value.trim());
+    update();
+  });
+
+  function switchTab(t) {
+    mode = t;
+    ['text','multi','seq'].forEach((tab, i) => {
+      document.getElementById('tab-' + tab).classList.toggle('active', tab === t);
+      document.querySelectorAll('.tab')[i].classList.toggle('active', tab === t);
+    });
+    update();
+  }
+
+  function setAlign(a, el) {
+    hAlign = a;
+    el.closest('.align-btns').querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    update();
+  }
+
+  function setVAlign(a, el) {
+    vAlign = a;
+    el.closest('.align-btns').querySelectorAll('.align-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    update();
+  }
+
+  function mmToDots(mm) { return Math.round(mm * 8); }
+
+  function getFont() { return document.getElementById('fontType').value; }
+
+  function makeLabel(text) {
+    const w = mmToDots(+document.getElementById('width').value);
+    const h = mmToDots(+document.getElementById('height').value);
+    const fs = +document.getElementById('fontSize').value;
+    const fw = Math.round(fs * 0.7);
+    const font = getFont();
+    const lines = text.split('\n').filter(l => l.trim() !== '');
+    const totalH = lines.length * fs + (lines.length - 1) * 6;
+    let y = vAlign === 'center' ? Math.round((h - totalH) / 2)
+           : vAlign === 'top'   ? 10
+           :                      h - totalH - 10;
+    y = Math.max(0, y);
+    const fields = lines.map((line, i) =>
+      `^FO0,${y + i*(fs+6)}^FB${w},1,0,${hAlign},0^A${font}N,${fs},${fw}^FD${line}^FS`
+    ).join('');
+    return `^XA^PW${w}^LL${h}^LH0,0${fields}^XZ`;
+  }
+
+  function generateZpl() {
+    if (mode === 'text') return makeLabel(document.getElementById('labelText').value || ' ');
+    if (mode === 'multi') return document.getElementById('multiText').value
+      .split('\n').filter(l => l.trim()).map(l => makeLabel(l)).join('');
+    if (mode === 'seq') {
+      const prefix = document.getElementById('seqPrefix').value;
+      const start = +document.getElementById('seqStart').value;
+      const end = +document.getElementById('seqEnd').value;
+      const copies = Math.max(1, +document.getElementById('seqCopies').value);
+      let zpl = '';
+      for (let i = start; i <= end; i++)
+        for (let c = 0; c < copies; c++)
+          zpl += makeLabel(prefix + i);
+      return zpl;
+    }
+  }
+
+  function getPrintEndpoint() {
+    let url = document.getElementById('serverUrl').value.trim();
+    if (!url) return '';
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = 'http://' + url;
+    }
+    url = url.replace(/\/+$/, '');
+    return url.endsWith('/print') ? url : url + '/print';
+  }
+
+  function buildCurlCmd() {
+    const endpoint = getPrintEndpoint() || 'http://192.168.0.199:5000/print';
+    return `curl -X POST ${endpoint} --data-binary "@teste.zpl"`;
+  }
+
+  function buildLpCmd(zpl) {
+    return `echo -e '${zpl.replace(/'/g, "'\\''")}' | lp -d ZD410 -o raw`;
+  }
+
+  function update() {
+    const font = getFont();
+    const meta = fontMeta[font];
+    document.getElementById('fontDesc').textContent = meta.desc;
+
+    const h = mmToDots(+document.getElementById('height').value);
+    const fs = +document.getElementById('fontSize').value;
+    const scaledFs = Math.max(8, Math.round(fs * (120 / h) * 0.7));
+    const textAlign = hAlign === 'C' ? 'center' : hAlign === 'L' ? 'left' : 'right';
+    const flexAlign = vAlign === 'center' ? 'center' : vAlign === 'top' ? 'flex-start' : 'flex-end';
+    const flexJustify = hAlign === 'C' ? 'center' : hAlign === 'L' ? 'flex-start' : 'flex-end';
+
+    let previewText = '';
+    let labelCount = 1;
+
+    if (mode === 'text') {
+      previewText = document.getElementById('labelText').value;
+    } else if (mode === 'multi') {
+      const lines = document.getElementById('multiText').value.split('\n').filter(l => l.trim());
+      previewText = lines[0] || '';
+      labelCount = lines.length;
+    } else if (mode === 'seq') {
+      const prefix = document.getElementById('seqPrefix').value;
+      const start = +document.getElementById('seqStart').value;
+      const end = +document.getElementById('seqEnd').value;
+      const copies = Math.max(1, +document.getElementById('seqCopies').value);
+      previewText = prefix + start;
+      labelCount = (end - start + 1) * copies;
+      document.getElementById('seqCount').textContent = labelCount + ' label' + (labelCount !== 1 ? 's' : '');
+    }
+
+    const preview = document.getElementById('preview');
+    preview.style.alignItems = flexAlign;
+    preview.style.justifyContent = flexJustify;
+    preview.innerHTML = `<div style="
+      text-align:${textAlign};
+      font-size:${scaledFs}px;
+      font-family:${meta.css};
+      font-weight:${font === 'C' || font === 'G' ? 'bold' : 'normal'};
+      padding:8px;width:100%
+    ">${previewText.replace(/\n/g,'<br>')}</div>`;
+
+    document.getElementById('previewBadge').textContent = labelCount + ' label' + (labelCount !== 1 ? 's' : '');
+
+    const zpl = generateZpl();
+    document.getElementById('cmdCurlText').textContent = buildCurlCmd();
+    document.getElementById('cmdLpText').textContent = buildLpCmd(zpl);
+    if (document.getElementById('zplBox').style.display !== 'none')
+      document.getElementById('zplBox').textContent = zpl;
+  }
+
+  ['labelText','multiText','seqPrefix','seqStart','seqEnd','seqCopies','width','height','fontSize']
+    .forEach(id => document.getElementById(id).addEventListener('input', update));
+
+  function toggleZpl() {
+    const box = document.getElementById('zplBox');
+    const tog = document.querySelector('.toggle');
+    const open = box.style.display === 'none';
+    box.style.display = open ? 'block' : 'none';
+    tog.textContent = open ? '▾ Hide ZPL' : '▸ Show ZPL';
+    if (open) box.textContent = generateZpl();
+  }
+
+  function setStatus(msg, isError) {
+    const s = document.getElementById('status');
+    s.textContent = msg;
+    s.className = 'status' + (isError ? ' error' : '');
+  }
+
+  // 1. Enviar direto via HTTP POST para a impressora
+  async function imprimirRede() {
+    const zpl = generateZpl();
+    const endpoint = getPrintEndpoint();
+
+    if (!endpoint) {
+      setStatus('Informe o IP/URL do Servidor Windows.', true);
+      return;
+    }
+
+    setStatus('Enviando etiqueta para o servidor Windows...', false);
+
+    try {
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain; charset=utf-8' },
+        body: zpl
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === 'success') {
+        setStatus('✓ Etiqueta enviada e impressa com sucesso!', false);
+      } else {
+        setStatus('✖ Erro no servidor: ' + (result.message || 'Falha ao imprimir'), true);
+      }
+    } catch (err) {
+      console.error(err);
+      setStatus('✖ Não foi possível conectar ao servidor. Verifique a URL/IP e o Firewall.', true);
+    }
+  }
+
+  // 2. Baixar arquivo .zpl
+  function downloadZplFile() {
+    const zpl = generateZpl();
+    const blob = new Blob([zpl], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'teste.zpl';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setStatus('✓ Arquivo "teste.zpl" baixado com sucesso!');
+  }
+
+  // 3. Copiar comando cURL
+  function copyCurlCmd() {
+    navigator.clipboard.writeText(buildCurlCmd())
+      .then(() => setStatus('✓ Comando cURL copiado.'))
+      .catch(() => setStatus('✖ Falha ao copiar.', true));
+  }
+
+  // 4. Copiar comando lp
+  function copyLpCmd() {
+    navigator.clipboard.writeText(buildLpCmd(generateZpl()))
+      .then(() => setStatus('✓ Comando lp copiado.'))
+      .catch(() => setStatus('✖ Falha ao copiar.', true));
+  }
+
+  // 5. Copiar apenas ZPL
+  function copyZpl() {
+    navigator.clipboard.writeText(generateZpl())
+      .then(() => setStatus('✓ Código ZPL copiado.'))
+      .catch(() => setStatus('✖ Falha ao copiar.', true));
+  }
+
+  update();
+</script>
+</body>
+</html>

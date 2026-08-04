@@ -1,0 +1,2 @@
+PRINTER_NAME = "ZDesigner ZD410-203dpi ZPL"
+PORT = 5000
