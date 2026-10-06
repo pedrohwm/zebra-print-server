@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <title>Zebra ZD410 - Print Server</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="container">
+
+    <h1>Zebra <span>ZD410</span> · Print Server</h1>
+
+    <div class="server-config">
+      <label>Servidor de Impressão Windows (IP / URL)</label>
+      <input
+        type="text"
+        id="serverUrl"
+        value="http://192.168.0.199:5000"
+        placeholder="http://192.168.0.199:5000"
+      >
+    </div>
+
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('text')">Text</div>
+      <div class="tab" onclick="switchTab('multi')">Multi</div>
+      <div class="tab" onclick="switchTab('seq')">Sequential</div>
+    </div>
+
+    <div class="card" style="border-radius: 0 4px 4px 4px;">
+
+      <!-- TEXT -->
+      <div id="tab-text" class="tab-content active">
+        <label>Label Text</label>
+        <textarea
+          id="labelText"
+          placeholder="Type what to print..."
+        ></textarea>
+
+        <div style="margin-top:16px">
+          <label>Number of Copies</label>
+          <input
+            type="number"
+            id="textCopies"
+            value="1"
+            min="1"
+            step="1"
+          >
+          <div class="hint">
+            Quantity of labels to print.
+          </div>
+        </div>
+      </div>
+
+      <!-- MULTI -->
+      <div id="tab-multi" class="tab-content">
+        <label>
+          Labels
+          <span class="badge">each line = 1 label</span>
+        </label>
+        <textarea
+          id="multiText"
+          style="min-height:120px"
+        >Sensor de fluxo
+Sensor de pressão
+Sensor de temperatura</textarea>
+        <div class="hint">
+          Each line prints as a separate label.
+        </div>
+      </div>
+
+      <!-- SEQUENTIAL -->
+      <div id="tab-seq" class="tab-content">
+        <label>Prefix (optional)</label>
+        <input
+          type="text"
+          id="seqPrefix"
+          placeholder="e.g. CABO-"
+          value=""
+        >
+
+        <div class="row">
+          <div>
+            <label>Start</label>
+            <input
+              type="number"
+              id="seqStart"
+              value="50110"
+            >
+          </div>
+          <div>
+            <label>End</label>
+            <input
+              type="number"
+              id="seqEnd"
+              value="50115"
+            >
+          </div>
+          <div>
+            <label>Copies each</label>
+            <input
+              type="number"
+              id="seqCopies"
+              value="1"
+              min="1"
+            >
+          </div>
+        </div>
+
+        <div class="hint" id="seqCount">
+          6 labels
+        </div>
+      </div>
+
+      <!-- HORIZONTAL ALIGNMENT -->
+      <div class="align-btns">
+        <div class="align-btn active" onclick="setAlign('C',this)">⬛ Center</div>
+        <div class="align-btn" onclick="setAlign('L',this)">◀ Left</div>
+        <div class="align-btn" onclick="setAlign('R',this)">▶ Right</div>
+      </div>
+
+      <!-- VERTICAL ALIGNMENT -->
+      <div class="align-btns">
+        <div class="align-btn active" onclick="setVAlign('center',this)">↕ V-Center</div>
+        <div class="align-btn" onclick="setVAlign('top',this)">↑ Top</div>
+        <div class="align-btn" onclick="setVAlign('bottom',this)">↓ Bottom</div>
+      </div>
+
+      <!-- LABEL SETTINGS -->
+      <div class="row">
+        <div>
+          <label>Width (mm)</label>
+          <input type="number" id="width" value="57.2" min="10" max="102">
+        </div>
+        <div>
+          <label>Height (mm)</label>
+          <input type="number" id="height" value="31.8" min="5" max="150">
+        </div>
+        <div>
+          <label>Font Size</label>
+          <input type="number" id="fontSize" value="40" min="10" max="200">
+        </div>
+      </div>
+
+      <!-- FONT -->
+      <div style="margin-top:16px">
+        <label>Font</label>
+        <select id="fontType" oninput="update()">
+          <option value="0">A0 — Default proportional</option>
+          <option value="A">A  — Small proportional</option>
+          <option value="B">B  — Small monospaced</option>
+          <option value="C">C  — Bold proportional</option>
+          <option value="D">D  — Monospaced</option>
+          <option value="E">E  — OCR-B</option>
+          <option value="F">F  — Large monospaced</option>
+          <option value="G">G  — Bold monospaced</option>
+          <option value="H">H  — OCR-A</option>
+        </select>
+        <div class="font-desc" id="fontDesc">
+          Default proportional — general purpose
+        </div>
+      </div>
+
+    </div>
+
+    <!-- PREVIEW -->
+    <div class="card">
+      <label>
+        Preview
+        <span class="badge" id="previewBadge">1 label</span>
+      </label>
+      <div class="preview" id="preview"></div>
+      <span class="toggle" onclick="toggleZpl()">▸ Show ZPL</span>
+      <div class="zpl-box" id="zplBox" style="display:none"></div>
+    </div>
+
+    <!-- PRINT -->
+    <button class="btn" onclick="imprimirRede()">
+      🖨️️ IMPRIMIR NA ZEBRA (HTTP)
+    </button>
+
+    <!-- ACTION BUTTONS -->
+    <div class="btn-group">
+      <button class="btn btn-secondary" onclick="downloadZplFile()">💾 BAIXAR ARQUIVO .ZPL</button>
+      <button class="btn btn-secondary" onclick="copyCurlCmd()">📋 COPIAR CURL (REDE)</button>
+      <button class="btn btn-secondary" onclick="copyLpCmd()">📋 COPIAR LP (LINUX LOCAL)</button>
+      <button class="btn btn-secondary" onclick="copyZpl()">📄 COPIAR APENAS ZPL</button>
+    </div>
+
+    <!-- COMMANDS -->
+    <div class="cmd-box">
+      <div class="cmd-label">Comando cURL (Rede)</div>
+      <div id="cmdCurlText"></div>
+      <div class="cmd-label" style="margin-top:10px;">Comando lp (Linux Local)</div>
+      <div id="cmdLpText"></div>
+    </div>
+
+    <div class="status" id="status"></div>
+
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>

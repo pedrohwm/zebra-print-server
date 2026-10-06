@@ -1,0 +1,322 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Courier New', monospace;
+  background: #1a1a1a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: 560px;
+}
+
+h1 {
+  font-size: 13px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+h1 span {
+  color: #00d4aa;
+}
+
+.card {
+  background: #242424;
+  border: 1px solid #333;
+  border-radius: 4px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-size: 11px;
+  letter-spacing: 2px;
+  color: #666;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+input, textarea, select {
+  width: 100%;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #e0e0e0;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  padding: 10px 12px;
+  border-radius: 3px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #00d4aa;
+}
+
+select option {
+  background: #1a1a1a;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.row > div {
+  flex: 1;
+}
+
+.preview {
+  background: #fff;
+  color: #000;
+  border-radius: 3px;
+  margin-top: 8px;
+  border: 2px dashed #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  height: 120px;
+}
+
+.btn {
+  width: 100%;
+  padding: 14px;
+  background: #00d4aa;
+  color: #000;
+  border: none;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: background 0.2s;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn:hover {
+  background: #00b892;
+}
+
+.btn:active {
+  background: #009e7d;
+}
+
+.btn-group {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-group .btn-secondary {
+  flex: 1;
+  min-width: 45%;
+  margin-top: 0;
+}
+
+.btn-secondary {
+  background: #2d2d2d;
+  color: #e0e0e0;
+  border: 1px solid #444;
+  font-size: 11px;
+  padding: 10px;
+}
+
+.btn-secondary:hover {
+  background: #363636;
+  border-color: #666;
+}
+
+.status {
+  font-size: 11px;
+  color: #00d4aa;
+  margin-top: 12px;
+  min-height: 18px;
+  letter-spacing: 1px;
+  word-break: break-all;
+}
+
+.status.error {
+  color: #ff5555;
+}
+
+.cmd-box {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 12px;
+  font-size: 11px;
+  color: #00d4aa;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 12px;
+  line-height: 1.5;
+  max-height: 140px;
+  overflow-y: auto;
+}
+
+.cmd-label {
+  font-size: 10px;
+  color: #555;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.zpl-box {
+  background: #111;
+  border: 1px solid #333;
+  border-radius: 3px;
+  padding: 12px;
+  font-size: 11px;
+  color: #888;
+  white-space: pre-wrap;
+  word-break: break-all;
+  margin-top: 8px;
+  max-height: 120px;
+  overflow-y: auto;
+}
+
+.toggle {
+  cursor: pointer;
+  color: #555;
+  font-size: 11px;
+  letter-spacing: 1px;
+  margin-top: 8px;
+  display: inline-block;
+}
+
+.toggle:hover {
+  color: #888;
+}
+
+.tabs {
+  display: flex;
+}
+
+.tab {
+  flex: 1;
+  padding: 10px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #555;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.tab:first-child {
+  border-radius: 3px 0 0 0;
+}
+
+.tab:last-child {
+  border-radius: 0 3px 0 0;
+  border-left: none;
+}
+
+.tab.active {
+  background: #242424;
+  color: #00d4aa;
+  border-bottom-color: #242424;
+}
+
+.tab-content {
+  display: none;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+.align-btns {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.align-btn {
+  flex: 1;
+  padding: 8px;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  color: #555;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 3px;
+  transition: all 0.2s;
+  text-align: center;
+}
+
+.align-btn.active {
+  border-color: #00d4aa;
+  color: #00d4aa;
+}
+
+.align-btn:hover {
+  border-color: #555;
+  color: #aaa;
+}
+
+.badge {
+  display: inline-block;
+  background: #00d4aa22;
+  color: #00d4aa;
+  border: 1px solid #00d4aa44;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-left: 8px;
+}
+
+.hint {
+  font-size: 11px;
+  color: #555;
+  margin-top: 8px;
+}
+
+.font-desc {
+  font-size: 10px;
+  color: #555;
+  margin-top: 4px;
+  letter-spacing: 1px;
+}
+
+.server-config {
+  background: #1e1e1e;
+  border: 1px solid #2a2a2a;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 16px;
+}
